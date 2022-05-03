@@ -2,6 +2,8 @@ import React from "react";
 import { getRandomWord } from "./utils.js";
 import "./App.css";
 
+// Store program parameters as "constants" in SCREAM_CASE at top of file or in dedicated constants file for easy access
+const NUM_STARTING_GUESSES = 10;
 class App extends React.Component {
   constructor(props) {
     // Always call super with props in constructor to initialise parent class
@@ -12,7 +14,7 @@ class App extends React.Component {
       // guessedLetters stores all letters a user has guessed so far
       guessedLetters: [],
       // Give the user 10 guesses to start
-      numGuessesLeft: 10,
+      numGuessesLeft: NUM_STARTING_GUESSES,
       // input controls the value in the form field
       input: "",
     };
@@ -26,6 +28,7 @@ class App extends React.Component {
 
   generateWordDisplay() {
     const wordDisplay = [];
+    // Show each letter in current word that exists in guessedLetters
     // for...of is a string and array iterator that does not use index
     for (let letter of this.state.currWord) {
       if (
@@ -84,13 +87,9 @@ class App extends React.Component {
 
   resetGame() {
     this.setState({
-      // currWord is the current secret word for this round. Update this with this.setState after each round.
       currWord: getRandomWord(),
-      // guessedLetters stores all letters a user has guessed so far
       guessedLetters: [],
-      // Give the user 10 guesses to start
-      numGuessesLeft: 10,
-      // input controls the value in the form field
+      numGuessesLeft: NUM_STARTING_GUESSES,
       input: "",
     });
   }
@@ -107,31 +106,36 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           <h1>Guess The Word 🚀</h1>
+          {/* Show user num letters in word and position of correctly-guessed letters */}
           <h3>Word Display</h3>
           {this.generateWordDisplay()}
+          {/* Show user letters they have guessed and num guesses left */}
           <h3>Guessed Letters</h3>
           {this.state.guessedLetters.length > 0
             ? this.state.guessedLetters.toString()
             : "-"}
           <p>Num guesses left: {this.state.numGuessesLeft}</p>
+          {/* Input area */}
           <h3>Input</h3>
           <p>Please submit 1 letter at a time.</p>
           <form onSubmit={this.handleSubmit}>
+            {/* Disable input fields once user guesses word or runs out of guesses */}
             <input
               type="text"
               value={this.state.input}
               onChange={this.handleChange}
               disabled={shouldDisableInput}
             />
-            {/* Disable input field after user successfully guesses word */}
             <input type="submit" value="Submit" disabled={shouldDisableInput} />
           </form>
+          {/* Congrats message if user guesses word */}
           {hasUserGuessedWord && (
             <div>
               <p>Congrats on guessing the word!</p>
               {playAgainButton}
             </div>
           )}
+          {/* Sorry message if user runs out of guesses */}
           {this.state.numGuessesLeft === 0 && !hasUserGuessedWord && (
             <div>
               <p>Sorry, you ran out of guesses.</p>
