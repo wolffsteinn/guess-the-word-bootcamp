@@ -3,6 +3,7 @@ import { getRandomWord } from "./utils.js";
 import "./App.css";
 
 // Store program parameters as "constants" in SCREAM_CASE at top of file or in dedicated constants file for easy access
+// This makes num starting guesses easier to edit than if we had hard-coded 10 everywhere
 const NUM_STARTING_GUESSES = 10;
 class App extends React.Component {
   constructor(props) {
@@ -18,15 +19,9 @@ class App extends React.Component {
       // input controls the value in the form field
       input: "",
     };
-    // This binding is necessary to make `this` work in the callback
-    this.generateWordDisplay = this.generateWordDisplay.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.checkHasUserGuessedWord = this.checkHasUserGuessedWord.bind(this);
-    this.resetGame = this.resetGame.bind(this);
   }
 
-  generateWordDisplay() {
+  generateWordDisplay = () => {
     const wordDisplay = [];
     // Show each letter in current word that exists in guessedLetters
     // for...of is a string and array iterator that does not use index
@@ -42,13 +37,13 @@ class App extends React.Component {
       }
     }
     return wordDisplay.toString();
-  }
+  };
 
-  handleChange(event) {
+  handleChange = (event) => {
     this.setState({ input: event.target.value });
-  }
+  };
 
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     // Prevent default form submit behaviour that refreshes the page
     event.preventDefault();
 
@@ -71,9 +66,9 @@ class App extends React.Component {
       // Reset input field
       input: "",
     }));
-  }
+  };
 
-  checkHasUserGuessedWord(inputLetter) {
+  checkHasUserGuessedWord = (inputLetter) => {
     // Create new array with spread operator because we do not wish to alter this.state.guessedLetters
     const guessedLetters = [...this.state.guessedLetters, inputLetter];
     for (let letter of this.state.currWord) {
@@ -83,16 +78,16 @@ class App extends React.Component {
     }
     // Return true if guessedLetters contains all letters in this.state.currWord
     return true;
-  }
+  };
 
-  resetGame() {
+  resetGame = () => {
     this.setState({
       currWord: getRandomWord(),
       guessedLetters: [],
       numGuessesLeft: NUM_STARTING_GUESSES,
       input: "",
     });
-  }
+  };
 
   render() {
     // Determine if the user has correctly guessed the word
